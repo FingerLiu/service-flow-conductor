@@ -1,0 +1,63 @@
+{
+    "comment": "天猫订单流转全周期",
+    "version": "1.0",
+    "start": "receive",
+    "states": {
+        "receive": {
+            "type": "task",
+            "next": "pay_judge",
+            "task": "chronosphere:receive-order",
+            "task_type": "async",
+            "input_path": "$",
+            "output_path": "$",
+            "paramters": {
+                "order_type": "tmall"
+            }
+        },
+        "pay_judge": {
+            "type": "choice",
+            "choices": [
+                {
+                    "variable": "$.order_status",
+                    "eq": "paid",
+                    "next": "split1"
+                },
+                {
+                    "variable": "$.order_status",
+                    "neq": "paid",
+                    "next": "end"
+                }
+            ],
+            "default": "end"
+        },
+        "split1": {
+            "type": "task",
+            "task": "chronosphere:order-split1",
+            "output_path": "$.split1_result",
+            "timeout": 5,
+            "retry": 10,
+            "wait_before_retry": 3,
+            "result_path": "$.",
+            "next": "split2"
+        },
+        "split2": {
+            "type": "task",
+            "task": "chronosphere:order-split2",
+            "output_path": "$.split2_result",
+            "next": "send"
+        },
+        "send": {
+            "type": "task",
+            "task": "chronosphere:send",
+            "next": "end"
+        },
+        "end": {
+            "type": "task",
+            "end": true
+        },
+        "failed": {
+            "type": "fail"
+        }
+    }
+
+}
