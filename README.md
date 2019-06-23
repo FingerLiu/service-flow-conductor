@@ -24,6 +24,14 @@ SFC 主要职能:
 - 服务间消息路由
 - 调用流程控制与监控
 
+# roadmap
+
+|version| basic goal |
+| --- | ---
+|0.1| 支持 common mode 的 worker, 能新建工作流并跑起来 |
+|0.2| 支持 specific mode 的 worker, 实习为指定工作流弹性伸缩 |
+|0.1| 支持动态加载，增加，修改 worker 后，不用重启原 worker |
+
 # principle
 
 - event
