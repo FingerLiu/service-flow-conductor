@@ -38,6 +38,7 @@ SFC 主要职能:
 - message queue
 - flow monitor
 - scheduler
+- worker
 
 > TODO 图
 
@@ -110,20 +111,31 @@ data flow in pub/sub mode and conductor mode.
 
 ## flow monitor
 
-查看每类 blueprint 统计信息
-查看每个 flow 状态信息
-启动/停止 blueprint
-重试 flow
+- 查看每类 blueprint 统计信息
+- 查看每个 flow 状态信息
+- 启动/停止 blueprint
+- 重试 flow
+
+flow monitor 基于 Elasticsearch 实现。
 
 ## scheduler
 由于每个工作流的处理的数据流和处理效率差异很大，我们实现了一套调度器机制，为每个 workflow 动态地分配资源。
 主要实现以下功能。
 
-- 增加/删除 workflow
-- 调整指定 workflow 的 job executor 副本数量
-- 调整指定 state 的 job executor 副本数量(待确定)
+- 增加/删除 worker
+- 调整指定 workflow 的 worker 副本数量
 
 更详细信息请查看 **behind the scenes**
+
+# worker
+
+worker 用来执行 job executor 的任务，调用接口，收发队列消息等。
+worker 有两种模式:
+
+- common: 可以执行所有的 job
+- specific: 仅执行指定类型的 workflow 的 job
+
+每个类型的 workflow 都需要有对应的 worker 才能使工作流流转起来。
 
 # messaging
 
@@ -139,6 +151,8 @@ topic: raw_order_tmall
 consumer group: order_split1
 
 # workflow 定义
+
+## schemaVersion
 
 ## Version
 
@@ -201,3 +215,11 @@ https://aws.amazon.com/cn/step-functions/
 每建一个 workflow 生成一个新的资源。
 这个资源是一个进程还是一个 docker contqiner?
 调度器是使用 go plugin 还是 kubernetes?
+
+# TODO
+## topic 制定
+为每个 job 指定不同的 topic, 还是所有任务共用一个 topic?
+
+## 怎么动态加载？
+添加 workflow 后，要想启用，就得加新的 worker 吗？
+修改 workflow 变更版本后，就得重启对应的 worker 吗？
