@@ -24,12 +24,21 @@ SFC 主要职能:
 - 服务间消息路由
 - 调用流程控制与监控
 
+## 为什么不实用点到点的服务编排模式
+
+**本小节翻译自 netflix conductor 文档**
+
+  在使用点到点的任务编排模式过程中，我们发现他很难适应快速增长的商业需求和业务复杂性。 在流程比较简单的时候，广播/订阅模式效果很好，但是随着业务复杂度提升，这种模式的问题也凸显出来：
+
+  - 业务流程内嵌到了多个应用（服务）中。这样通常会导致系统耦合度较高，使之更难适应频繁变化的场景。
+  - 几乎没有办法系统性的回答诸如“某项任务已经完成了百分之多少，进展到哪一步了？”之类的问题。
+
 # roadmap
 
 |version| basic goal |
 | --- | ---
 |0.1| 支持 common mode 的 worker, 能新建工作流并跑起来 |
-|0.2| 支持 specific mode 的 worker, 实习为指定工作流弹性伸缩 |
+|0.2| 支持 specific mode 的 worker, 实现为指定工作流弹性伸缩 |
 |0.1| 支持动态加载，增加，修改 worker 后，不用重启原 worker |
 
 # principle
@@ -168,6 +177,13 @@ consumer group: order_split1
 
 ## states
 
+## messageType
+
+- common
+- specific
+
+## topic
+
 example:
 
 ```json
@@ -226,8 +242,15 @@ https://aws.amazon.com/cn/step-functions/
 
 # TODO
 ## topic 制定
-为每个 job 指定不同的 topic, 还是所有任务共用一个 topic?
+为每个 job 指定不同的 topic, 为每个 workflow 指定不同的 topic, 还是所有任务共用一个 topic?
 
 ## 怎么动态加载？
 添加 workflow 后，要想启用，就得加新的 worker 吗？
 修改 workflow 变更版本后，就得重启对应的 worker 吗？
+
+## kafka topic mode
+kafka 消息处理有两种模式: publish-subscribe 和 queue。
+这个是可以在 topic 创建的时候选择的。
+
+- publish-subscribe 模式会把每条消息广播给所有消费者
+- queue 模式保证每条消息只传递给一个 consumer。
