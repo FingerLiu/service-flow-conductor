@@ -158,7 +158,9 @@ SLA 为 S0 或每天执行次数大于 1w 次的，推荐使用 specific 类型�
 
 # messaging
 
-async 和 sync
+common 模式下， 所有消息都进入到一个 topic 中。
+TODO: specific 模式下，是为每个 task 建立 topic, 还是为每个 workflow 建立 topic?
+TODO: 启动工作流的时候，是发一个 http 请求，此时要不要往某个 topic 中推消息?
 
 ## async
 
@@ -237,6 +239,13 @@ https://aws.amazon.com/cn/step-functions/
 ## json schema
 
 # behind the scenes
+
+## task meta, task reference, workflow meta(blueprint)
+为了提高系统的可复用性， task meta 被定义为全局的，而不是隶属于某个 workflow meta,
+当 workflow 中需要使用 task 时，会创建 task reference, 上记录 task name, task version, task input path
+
+为解决更新运行中的工作流的问题, task meta 和 workflow meta 都有版本信息。
+
 ## 调度器
 每建一个 workflow 生成一个新的资源。
 这个资源是一个进程还是一个 docker contqiner?
@@ -257,9 +266,20 @@ kafka 消息处理有两种模式: publish-subscribe 和 queue。
 - queue 模式保证每条消息只传递给一个 consumer。
 
 ## pause and resume
- 
+
+通过给想暂停或恢复的 workflow 监听的 queue 中推送特殊类型的消息实现。
 https://github.com/confluentinc/confluent-kafka-go/issues/280
 
 https://github.com/confluentinc/confluent-kafka-go/blob/master/kafka/consumer.go
 
+## workflow update
 
+workflow meta 变更后, workflow meta 的 version 都会 +1。
+
+如果 task meta 版本更新， 已经引用该 task meta 的 workflow meta 并不会自动更新， 需要手动更改 task reference 后才会使用新的 task meta(并且会导致 workflow 版本 +1).
+
+更新正在使用中的 workflow 的 workflow meta 时，workflow 受影响如下:
+
+- 已经执行完的工作流没有影响，查看记录时看到的也是旧版本的 workflow meta
+- 正在执行中的工作流没有影响，查看记录时看到的也是旧版本的 workflow meta
+- 后续新启动的工作流默认都使用最新版本的 workflow meta
