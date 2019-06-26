@@ -28,10 +28,10 @@ SFC 主要职能:
 
 **本小节翻译自 netflix conductor 文档**
 
-  在使用点到点的任务编排模式过程中，我们发现他很难适应快速增长的商业需求和业务复杂性。 在流程比较简单的时候，广播/订阅模式效果很好，但是随着业务复杂度提升，这种模式的问题也凸显出来：
+在使用点到点的任务编排模式过程中，我们发现他很难适应快速增长的商业需求和业务复杂性。 在流程比较简单的时候，广播/订阅模式效果很好，但是随着业务复杂度提升，这种模式的问题也凸显出来：
 
-  - 业务流程内嵌到了多个应用（服务）中。这样通常会导致系统耦合度较高，使之更难适应频繁变化的场景。
-  - 几乎没有办法系统性的回答诸如“某项任务已经完成了百分之多少，进展到哪一步了？”之类的问题。
+- 业务流程内嵌到了多个应用（服务）中。这样通常会导致系统耦合度较高，使之更难适应频繁变化的场景。
+- 几乎没有办法系统性的回答诸如“某项任务已经完成了百分之多少，进展到哪一步了？”之类的问题。
 
 # roadmap
 
@@ -57,7 +57,7 @@ SFC 主要职能:
 - scheduler
 - worker
 
-> TODO 图
+![arch](https://raw.githubusercontent.com/FingerLiu/service-flow-conductor/master/images/arch.png)
 
 ## composer
 
@@ -152,6 +152,8 @@ worker 有两种模式:
 - common: 可以执行所有的 job
 - specific: 仅执行指定类型的 workflow 的 job
 
+SLA 为 S0 或每天执行次数大于 1w 次的，推荐使用 specific 类型。
+
 每个类型的 workflow 都需要有对应的 worker 才能使工作流流转起来。
 
 # messaging
@@ -240,7 +242,6 @@ https://aws.amazon.com/cn/step-functions/
 这个资源是一个进程还是一个 docker contqiner?
 调度器是使用 go plugin 还是 kubernetes?
 
-# TODO
 ## topic 制定
 为每个 job 指定不同的 topic, 为每个 workflow 指定不同的 topic, 还是所有任务共用一个 topic?
 
@@ -254,3 +255,11 @@ kafka 消息处理有两种模式: publish-subscribe 和 queue。
 
 - publish-subscribe 模式会把每条消息广播给所有消费者
 - queue 模式保证每条消息只传递给一个 consumer。
+
+## pause and resume
+ 
+https://github.com/confluentinc/confluent-kafka-go/issues/280
+
+https://github.com/confluentinc/confluent-kafka-go/blob/master/kafka/consumer.go
+
+
