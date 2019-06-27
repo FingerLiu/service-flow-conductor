@@ -56,6 +56,7 @@ SFC 主要职能:
 - flow monitor
 - scheduler
 - worker
+- trigger gateway
 
 ![arch](https://raw.githubusercontent.com/FingerLiu/service-flow-conductor/master/images/arch.png)
 
@@ -144,7 +145,7 @@ flow monitor 基于 Elasticsearch 实现。
 
 更详细信息请查看 **behind the scenes**
 
-# worker
+## worker
 
 worker 用来执行 job executor 的任务，调用接口，收发队列消息等。
 worker 有两种模式:
@@ -155,6 +156,10 @@ worker 有两种模式:
 SLA 为 S0 或每天执行次数大于 1w 次的，推荐使用 specific 类型。
 
 每个类型的 workflow 都需要有对应的 worker 才能使工作流流转起来。
+
+## trigger gateway
+
+接收 HTTP 请求用于外部应用触发工作流。
 
 # messaging
 
