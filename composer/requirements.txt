@@ -1,5 +1,5 @@
 astroid==2.2.5
-Django==2.2.2
+Django==2.2.3
 django-restframework==0.0.1
 isort==4.3.21
 lazy-object-proxy==1.4.1
