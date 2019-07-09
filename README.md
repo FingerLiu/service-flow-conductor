@@ -206,7 +206,7 @@ example:
 }
 ```
 
-types
+### types
 
 - Task
 - Choice
@@ -222,6 +222,14 @@ Amazon States Language
 https://states-language.net/spec.html
 
 # E-R
+
+TODO github 链接
+
+# in action
+
+技术架构与组织架构相辅相成。每条业务线，有相应的负责人。你可以称他为
+流程管理员/技术接口人/项目负责人/... 但是其本质上就是对某条业务线全生命周期负责。
+其工作内容不局限在某一服务，该流程出现任何问题，业务线负责人都负责解决。
 
 # others
 
