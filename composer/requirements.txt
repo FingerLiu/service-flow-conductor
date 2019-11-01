@@ -1,6 +1,6 @@
 astroid==2.2.5
 django-mysql==3.2.0
-Django==2.2.3
+Django==2.2.4
 django-restframework==0.0.1
 isort==4.3.21
 lazy-object-proxy==1.4.1
