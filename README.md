@@ -88,7 +88,7 @@ transfer topic: raw_order_tmall
 transfer consumer group: order_split6
 
 为了实现 job 上下游解耦，以及工作流控制， SFC 要对消息做一次转发(有性能损耗，待优化)。
-SFC 中的每个服务无需关系自己是否有下游服务，以及有多少个下游服务。
+SFC 中的每个服务无需关心自己是否有下游服务，以及有多少个下游服务。
 假设服务 A 被两个业务流程共用，分别被 B， C 共用，pub/sub 模式和 conductor 模式消息传递如下。
 
 data flow in pub/sub mode and conductor mode.
@@ -264,7 +264,7 @@ https://aws.amazon.com/cn/step-functions/
 这个资源是一个进程还是一个 docker contqiner?
 调度器是使用 go plugin 还是 kubernetes?
 
-## topic 制定
+## topic 指定
 为每个 job 指定不同的 topic, 为每个 workflow 指定不同的 topic, 还是所有任务共用一个 topic?
 
 ## 怎么动态加载？
